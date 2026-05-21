@@ -12,12 +12,10 @@
 
     :root {
       --bg:         #00010f;
-      --surface:    #02040f;
       --card:       #060a1e;
       --border:     #0d1240;
       --border-b:   #1a2280;
       --accent:     #3639ff;
-      --accent-s:   #1a1dcc;
       --accent-dim: rgba(54,57,255,0.10);
       --accent-glo: 0 0 18px rgba(54,57,255,0.5), 0 0 50px rgba(54,57,255,0.2);
       --text:       #d0d4ff;
@@ -29,23 +27,18 @@
 
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); font-family: var(--font-m); overflow-x: hidden; cursor: none; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity:0.022; }
 
-    body::before {
-      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.022;
-    }
-
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--accent); border-radius:2px; }
 
     /* ── Cursor ─────────────────────── */
     .cursor { position:fixed; width:8px; height:8px; background:var(--accent); border-radius:50%; pointer-events:none; z-index:9999; transition:transform 0.12s ease; box-shadow:var(--accent-glo); }
     .cursor-ring { position:fixed; width:28px; height:28px; border:1px solid rgba(54,57,255,0.45); border-radius:50%; pointer-events:none; z-index:9998; transition:width 0.2s,height 0.2s; transform:translate(-50%,-50%); }
     #prog { position:fixed; top:0; left:0; height:2px; background:var(--accent); width:0%; z-index:1000; box-shadow:var(--accent-glo); transition:width 0.1s; }
 
-    /* ── Anim helpers ───────────────── */
+    /* ── Anims ──────────────────────── */
     @keyframes pulse  { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.5} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -56,68 +49,65 @@
     /* ════════════════════════════════ */
     /* NAV                             */
     /* ════════════════════════════════ */
-    nav {
-      position:fixed; top:0; left:0; right:0; z-index:800;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:1rem 2.5rem;
-      background:rgba(0,1,15,0.82); backdrop-filter:blur(18px);
-      border-bottom:1px solid var(--border);
-    }
+    nav { position:fixed; top:0; left:0; right:0; z-index:800; display:flex; align-items:center; justify-content:space-between; padding:1rem 2.5rem; background:rgba(0,1,15,0.85); backdrop-filter:blur(18px); border-bottom:1px solid var(--border); }
     .nav-left { display:flex; align-items:baseline; gap:0.6rem; }
     .nav-logo { font-family:var(--font-d); font-weight:800; font-size:1.3rem; color:var(--text); text-decoration:none; letter-spacing:0.04em; }
-    .nav-logo .part2 { color:var(--accent); }
+    .nav-logo .p2 { color:var(--accent); }
     .nav-jp { font-size:0.65rem; opacity:0.28; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); letter-spacing:0.08em; }
-
     .live-pill { display:flex; align-items:center; gap:0.45rem; font-size:0.66rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); border:1px solid var(--border-b); padding:0.3rem 0.8rem; transition:all 0.4s; }
     .live-dot  { width:7px; height:7px; border-radius:50%; background:var(--text-faint); transition:background 0.4s,box-shadow 0.4s; }
     .live-pill.is-live { color:var(--accent); border-color:var(--accent); box-shadow:0 0 14px rgba(54,57,255,0.35); }
     .live-pill.is-live .live-dot { background:var(--accent); box-shadow:0 0 8px var(--accent); animation:pulse 1.3s ease-in-out infinite; }
 
     /* ════════════════════════════════ */
-    /* LIVE BANNER                     */
+    /* LIVE WRAPPER (banner + stream)  */
+    /* hidden when offline             */
     /* ════════════════════════════════ */
-    #live-banner {
-      position:relative; z-index:1; margin-top:62px;
-      display:none; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap;
-      padding:0.9rem 2rem;
-      background:linear-gradient(90deg,transparent,rgba(54,57,255,0.16),rgba(54,57,255,0.16),transparent);
-      border-bottom:1px solid rgba(54,57,255,0.35);
-    }
-    #live-banner.visible { display:flex; }
+    #live-content { display:none; margin-top:62px; /* clear fixed nav */ }
+    #live-content.visible { display:block; }
+
+    /* ── Banner ─── */
+    #live-banner { display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap; padding:0.85rem 2rem; background:linear-gradient(90deg,transparent,rgba(54,57,255,0.16),rgba(54,57,255,0.16),transparent); border-bottom:1px solid rgba(54,57,255,0.35); }
     .banner-dot  { width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 14px var(--accent); animation:pulse 1.2s ease-in-out infinite; }
     .banner-text { font-family:var(--font-d); font-weight:800; font-size:0.88rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); text-shadow:0 0 24px rgba(54,57,255,0.9); }
     .banner-jp   { font-size:0.8rem; opacity:0.45; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); }
     .banner-link { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border-bottom:1px solid var(--border-b); padding-bottom:1px; transition:color 0.2s; }
     .banner-link:hover { color:var(--accent); border-color:var(--accent); }
 
+    /* ── Stream section ─── */
+    #stream { position:relative; z-index:1; padding:3rem 2rem 4rem; max-width:1100px; margin:0 auto; }
+    .stream-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem; }
+    .stream-label-wrap { display:flex; align-items:baseline; gap:0.6rem; }
+    .stream-label { font-family:var(--font-d); font-weight:700; font-size:1.2rem; color:var(--text); letter-spacing:0.04em; }
+    .stream-label span { color:var(--accent); }
+    .stream-jp  { font-size:0.75rem; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); opacity:0.32; }
+    .stream-ch-link { font-size:0.72rem; color:var(--text-muted); text-decoration:none; letter-spacing:0.12em; text-transform:uppercase; border-bottom:1px solid var(--border-b); padding-bottom:2px; transition:color 0.2s; }
+    .stream-ch-link:hover { color:var(--accent); border-color:var(--accent); }
+    .stream-wrap { position:relative; border:1px solid var(--accent); box-shadow:0 0 0 1px rgba(54,57,255,0.4), 0 0 60px rgba(54,57,255,0.18); }
+    .stream-aspect { position:relative; width:100%; padding-top:56.25%; background:var(--card); }
+    #twitch-player { position:absolute; inset:0; width:100%; height:100%; }
+    .stream-loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--card); z-index:2; transition:opacity 0.5s; }
+    .stream-loading.hidden { opacity:0; pointer-events:none; }
+    .stream-loading-icon { font-size:2.5rem; opacity:0.22; }
+    .stream-loading-text { font-size:0.78rem; color:var(--text-muted); letter-spacing:0.1em; }
+    .stream-badge { position:absolute; top:-1px; left:-1px; z-index:3; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; padding:0.3rem 0.75rem; background:var(--accent); box-shadow:0 0 16px rgba(54,57,255,0.7); color:var(--bg); }
+
     /* ════════════════════════════════ */
     /* HERO                            */
     /* ════════════════════════════════ */
-    #hero {
-      position:relative; min-height:100vh;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; padding:8rem 2rem 5rem; overflow:hidden;
-    }
+    #hero { position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8rem 2rem 5rem; overflow:hidden; }
     #hero-canvas { position:absolute; inset:0; }
-    .hero-grid {
-      position:absolute; inset:0; pointer-events:none;
-      background-image:
-        linear-gradient(rgba(54,57,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(54,57,255,0.04) 1px, transparent 1px);
-      background-size:50px 50px;
-    }
-    .hero-radial { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 70% 55% at 50% 50%, rgba(54,57,255,0.08) 0%, transparent 70%); }
-
+    .hero-grid  { position:absolute; inset:0; pointer-events:none; background-image:linear-gradient(rgba(54,57,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(54,57,255,0.04) 1px,transparent 1px); background-size:50px 50px; }
+    .hero-radial { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(54,57,255,0.08) 0%,transparent 70%); }
     .hero-jp-tr { position:absolute; top:14%; right:6%; font-size:5rem; writing-mode:vertical-rl; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); opacity:0.035; user-select:none; pointer-events:none; letter-spacing:0.2em; }
     .hero-jp-bl { position:absolute; bottom:12%; left:5%; font-size:3.5rem; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); opacity:0.035; user-select:none; pointer-events:none; letter-spacing:0.15em; }
-
     .hero-content { position:relative; z-index:2; max-width:820px; }
 
-    .hero-eyebrow { font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); margin-bottom:1.5rem; display:flex; align-items:center; justify-content:center; gap:0.75rem; opacity:0; animation:fadeUp 0.6s 0.2s ease forwards; }
-    .hero-eyebrow::before, .hero-eyebrow::after { content:''; width:26px; height:1px; background:var(--accent); }
+    .hero-eyebrow { font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--accent); margin-bottom:1.5rem; display:flex; align-items:center; justify-content:center; gap:0.75rem; flex-wrap:wrap; opacity:0; animation:fadeUp 0.6s 0.2s ease forwards; }
+    .hero-eyebrow::before, .hero-eyebrow::after { content:''; width:26px; height:1px; background:var(--accent); flex-shrink:0; }
 
-    .hero-name { font-family:var(--font-d); font-weight:800; font-size:clamp(4rem,13vw,10rem); line-height:0.9; letter-spacing:-0.03em; margin-bottom:1.25rem; opacity:0; animation:fadeUp 0.6s 0.35s ease forwards; }
-    .hero-name-solid  { display:block; color:var(--text); text-shadow:0 0 40px rgba(54,57,255,0.35), 0 0 80px rgba(54,57,255,0.15); }
+    .hero-name { font-family:var(--font-d); font-weight:800; font-size:clamp(4rem,13vw,10rem); line-height:0.9; letter-spacing:-0.03em; margin-bottom:1.5rem; opacity:0; animation:fadeUp 0.6s 0.35s ease forwards; }
+    .hero-name-solid   { display:block; color:var(--text); text-shadow:0 0 40px rgba(54,57,255,0.35),0 0 80px rgba(54,57,255,0.15); }
     .hero-name-outline { display:block; color:transparent; -webkit-text-stroke:1px rgba(54,57,255,0.25); }
     .accent-dot { color:var(--accent); }
 
@@ -126,8 +116,18 @@
     .glitch::before { color:var(--accent); clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%); opacity:0; animation:g1 6s 1s infinite; }
     .glitch::after  { color:#00e5ff;       clip-path:polygon(0 62%,100% 62%,100% 78%,0 78%); opacity:0; animation:g2 6s 1.3s infinite; }
 
-    .hero-sub { font-size:clamp(0.85rem,1.8vw,1.05rem); color:var(--text-muted); margin-bottom:2.5rem; letter-spacing:0.04em; line-height:1.7; opacity:0; animation:fadeUp 0.6s 0.55s ease forwards; }
-    .hero-sub .hl { color:var(--text); }
+    /* Bio quote box */
+    .hero-bio {
+      position:relative; margin:0 auto 2.5rem;
+      padding:1.25rem 1.5rem; max-width:680px;
+      border:1px solid var(--border-b);
+      background:rgba(6,10,30,0.6);
+      text-align:left;
+      opacity:0; animation:fadeUp 0.6s 0.55s ease forwards;
+    }
+    .hero-bio::before { content:'"'; position:absolute; top:-0.6rem; left:1rem; font-family:var(--font-d); font-size:2.5rem; color:var(--accent); opacity:0.4; line-height:1; }
+    .hero-bio p { font-size:0.82rem; color:var(--text-muted); line-height:1.8; letter-spacing:0.02em; font-style:italic; }
+    .hero-bio p em { font-style:normal; color:var(--text); }
 
     .hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; opacity:0; animation:fadeUp 0.6s 0.75s ease forwards; }
     .btn-watch { font-family:var(--font-m); font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.85rem 2rem; background:var(--accent); color:#000420; text-decoration:none; font-weight:500; position:relative; overflow:hidden; box-shadow:0 0 22px rgba(54,57,255,0.5); transition:box-shadow 0.2s; }
@@ -141,35 +141,7 @@
     .scroll-bar  { width:1px; height:44px; background:linear-gradient(to bottom,var(--accent),transparent); animation:spulse 2s ease-in-out infinite; }
 
     /* ════════════════════════════════ */
-    /* STREAM                          */
-    /* ════════════════════════════════ */
-    #stream { position:relative; z-index:1; padding:4rem 2rem; max-width:1100px; margin:0 auto; }
-    .stream-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem; }
-    .stream-label-wrap { display:flex; align-items:baseline; gap:0.6rem; }
-    .stream-label { font-family:var(--font-d); font-weight:700; font-size:1.2rem; color:var(--text); letter-spacing:0.04em; }
-    .stream-label span { color:var(--accent); }
-    .stream-jp { font-size:0.75rem; font-family:'Hiragino Kaku Gothic Pro','Noto Sans JP',sans-serif; color:var(--accent); opacity:0.32; }
-    .stream-ch-link { font-size:0.72rem; color:var(--text-muted); text-decoration:none; letter-spacing:0.12em; text-transform:uppercase; border-bottom:1px solid var(--border-b); padding-bottom:2px; transition:color 0.2s; }
-    .stream-ch-link:hover { color:var(--accent); border-color:var(--accent); }
-
-    .stream-wrap { position:relative; border:1px solid var(--border-b); box-shadow:0 0 0 1px rgba(54,57,255,0.08), 0 0 40px rgba(54,57,255,0.06); transition:box-shadow 0.6s,border-color 0.6s; }
-    .stream-wrap.is-live { border-color:var(--accent); box-shadow:0 0 0 1px rgba(54,57,255,0.4), 0 0 70px rgba(54,57,255,0.22); }
-    .stream-aspect { position:relative; width:100%; padding-top:56.25%; background:var(--card); }
-    #twitch-player { position:absolute; inset:0; width:100%; height:100%; }
-
-    .stream-loading { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; background:var(--card); z-index:2; transition:opacity 0.5s; }
-    .stream-loading.hidden { opacity:0; pointer-events:none; }
-    .stream-loading-icon { font-size:2.5rem; opacity:0.22; }
-    .stream-loading-text { font-size:0.78rem; color:var(--text-muted); letter-spacing:0.1em; }
-
-    .stream-badge { position:absolute; top:-1px; left:-1px; z-index:3; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; padding:0.3rem 0.75rem; background:var(--text-faint); color:var(--bg); transition:all 0.5s; opacity:0; }
-    .stream-wrap.is-live .stream-badge { background:var(--accent); opacity:1; box-shadow:0 0 16px rgba(54,57,255,0.7); }
-
-    .stream-offline { font-size:0.72rem; color:var(--text-muted); margin-top:0.75rem; text-align:center; letter-spacing:0.05em; line-height:1.6; transition:opacity 0.4s; }
-    .stream-offline.hidden { opacity:0; }
-
-    /* ════════════════════════════════ */
-    /* SECTION SHARED                  */
+    /* SECTIONS SHARED                 */
     /* ════════════════════════════════ */
     .sec-label { font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:0.75rem; margin-bottom:0.55rem; }
     .sec-label::before { content:''; width:22px; height:1px; background:var(--accent); }
@@ -182,106 +154,101 @@
     /* ════════════════════════════════ */
     #schedule { position:relative; z-index:1; padding:4rem 2rem; max-width:1100px; margin:0 auto; }
 
-    .sched-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; background:var(--border); }
-    .sched-day { background:var(--bg); padding:1.25rem 0.75rem; text-align:center; position:relative; overflow:hidden; transition:background 0.2s; }
+    .sched-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; background:var(--border); margin-bottom:2px; }
+    .sched-day { background:var(--bg); padding:1.25rem 0.6rem; text-align:center; position:relative; overflow:hidden; transition:background 0.2s; }
     .sched-day.active { background:var(--card); }
     .sched-day.active::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); box-shadow:0 0 10px rgba(54,57,255,0.7); }
     .sched-day:hover { background:var(--accent-dim); }
-    .day-name { font-family:var(--font-d); font-size:0.72rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.6rem; }
+    .day-name { font-family:var(--font-d); font-size:0.72rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem; }
     .sched-day.active .day-name { color:var(--accent); }
     .sched-day:not(.active) .day-name { color:var(--text-faint); }
-    .day-time { font-size:1.05rem; font-family:var(--font-d); font-weight:700; margin-bottom:0.3rem; }
-    .sched-day.active .day-time { color:var(--text); }
-    .sched-day:not(.active) .day-time { color:var(--text-faint); font-size:0.8rem; margin-top:0.4rem; }
-    .day-tag { font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.15rem 0.4rem; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(54,57,255,0.25); display:inline-block; margin-top:0.4rem; }
-    .day-off { font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint); margin-top:0.25rem; }
-    .sched-note { margin-top:1.25rem; font-size:0.72rem; color:var(--text-muted); letter-spacing:0.04em; line-height:1.6; }
+    .day-time { font-size:1.1rem; font-family:var(--font-d); font-weight:700; color:var(--text); margin-bottom:0.25rem; }
+    .day-tag  { font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.15rem 0.4rem; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(54,57,255,0.25); display:inline-block; margin-top:0.3rem; line-height:1.4; }
+    .day-off  { font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); margin-top:0.3rem; }
+
+    /* Timezone row */
+    .tz-row { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:var(--border); margin-bottom:1.5rem; }
+    .tz-item { background:var(--card); padding:0.9rem 1rem; display:flex; align-items:center; gap:0.6rem; }
+    .tz-flag { font-size:1.1rem; flex-shrink:0; }
+    .tz-info { display:flex; flex-direction:column; gap:0.1rem; }
+    .tz-country { font-size:0.62rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; }
+    .tz-time   { font-family:var(--font-d); font-size:1rem; font-weight:700; color:var(--text); letter-spacing:0.05em; }
+    .tz-note   { font-size:0.58rem; color:var(--text-faint); letter-spacing:0.06em; }
+
+    .sched-note { font-size:0.72rem; color:var(--text-muted); letter-spacing:0.04em; line-height:1.6; }
     .sched-note span { color:var(--accent); }
 
     /* ════════════════════════════════ */
     /* SOCIALS                         */
     /* ════════════════════════════════ */
     #socials { position:relative; z-index:1; padding:4rem 2rem 6rem; max-width:1100px; margin:0 auto; }
-
     .socials-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:2px; background:var(--border); }
 
-    /* ── Base card ── */
-    .social-card {
-      background:var(--bg); padding:2rem 1.25rem; text-align:center;
-      text-decoration:none; position:relative; overflow:hidden;
-      display:flex; flex-direction:column; align-items:center; gap:0.75rem;
-      transition:background 0.25s;
-    }
-    /* bottom glow bar */
+    .social-card { background:var(--bg); padding:2rem 1.25rem; text-align:center; text-decoration:none; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; gap:0.75rem; transition:background 0.25s; }
     .social-card::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; transform:scaleX(0); transition:transform 0.3s ease; transform-origin:left; }
     .social-card:hover::before { transform:scaleX(1); }
     .social-card:hover { background:var(--card); }
-
-    /* ── Icon box ── */
-    .social-icon {
-      width:46px; height:46px;
-      display:flex; align-items:center; justify-content:center;
-      border:1px solid; /* color set per brand */
-      transition:box-shadow 0.25s, border-color 0.25s, background 0.25s;
-    }
+    .social-icon { width:46px; height:46px; display:flex; align-items:center; justify-content:center; border:1px solid; transition:box-shadow 0.25s,border-color 0.25s,background 0.25s; }
     .social-icon svg { width:20px; height:20px; transition:fill 0.25s; }
-
     .social-name   { font-family:var(--font-d); font-size:0.7rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; transition:color 0.25s; }
     .social-handle { font-size:0.63rem; color:var(--text-faint); letter-spacing:0.06em; }
 
-    /* ══ TWITCH — #9146FF ══ */
-    .sc-twitch .social-icon    { background:rgba(145,70,255,0.07); border-color:rgba(145,70,255,0.25); }
-    .sc-twitch .social-icon svg{ fill:rgba(145,70,255,0.55); }
+    /* Brand colors */
+    .sc-twitch    { --ic:#9146ff; --ir:145; --ig:70;  --ib:255; }
+    .sc-discord   { --ic:#5865f2; --ir:88;  --ig:101; --ib:242; }
+    .sc-x         { --ic:#e7e9ea; --ir:231; --ig:233; --ib:234; }
+    .sc-tiktok    { --ic:#ff2d55; --ir:255; --ig:45;  --ib:85;  }
+    .sc-instagram { --ic:#e1306c; --ir:225; --ig:48;  --ib:108; }
+    .sc-youtube   { --ic:#ff4040; --ir:255; --ig:64;  --ib:64;  }
+
+    .sc-twitch .social-icon    { background:rgba(145,70,255,0.07);  border-color:rgba(145,70,255,0.25); }
+    .sc-discord .social-icon   { background:rgba(88,101,242,0.07);  border-color:rgba(88,101,242,0.25); }
+    .sc-x .social-icon         { background:rgba(231,233,234,0.04); border-color:rgba(231,233,234,0.15); }
+    .sc-tiktok .social-icon    { background:rgba(255,45,85,0.07);   border-color:rgba(255,45,85,0.25); }
+    .sc-instagram .social-icon { background:rgba(225,48,108,0.07);  border-color:rgba(225,48,108,0.25); }
+    .sc-youtube .social-icon   { background:rgba(255,64,64,0.07);   border-color:rgba(255,64,64,0.25); }
+
+    .sc-twitch .social-icon svg    { fill:rgba(145,70,255,0.55); }
+    .sc-discord .social-icon svg   { fill:rgba(88,101,242,0.55); }
+    .sc-x .social-icon svg         { fill:rgba(231,233,234,0.4); }
+    .sc-tiktok .social-icon svg    { fill:rgba(255,45,85,0.55); }
+    .sc-instagram .social-icon svg { fill:rgba(225,48,108,0.55); }
+    .sc-youtube .social-icon svg   { fill:rgba(255,64,64,0.55); }
+
     .sc-twitch .social-name    { color:rgba(145,70,255,0.55); }
-    .sc-twitch::before         { background:#9146ff; }
-    .sc-twitch:hover .social-icon     { background:rgba(145,70,255,0.18); border-color:#9146ff; box-shadow:0 0 16px rgba(145,70,255,0.45); }
-    .sc-twitch:hover .social-icon svg { fill:#9146ff; }
-    .sc-twitch:hover .social-name     { color:#9146ff; }
-
-    /* ══ DISCORD — #5865F2 ══ */
-    .sc-discord .social-icon    { background:rgba(88,101,242,0.07); border-color:rgba(88,101,242,0.25); }
-    .sc-discord .social-icon svg{ fill:rgba(88,101,242,0.55); }
-    .sc-discord .social-name    { color:rgba(88,101,242,0.55); }
-    .sc-discord::before         { background:#5865f2; }
-    .sc-discord:hover .social-icon     { background:rgba(88,101,242,0.18); border-color:#5865f2; box-shadow:0 0 16px rgba(88,101,242,0.45); }
-    .sc-discord:hover .social-icon svg { fill:#5865f2; }
-    .sc-discord:hover .social-name     { color:#5865f2; }
-
-    /* ══ X — #e7e9ea ══ */
-    .sc-x .social-icon    { background:rgba(231,233,234,0.04); border-color:rgba(231,233,234,0.15); }
-    .sc-x .social-icon svg{ fill:rgba(231,233,234,0.4); }
-    .sc-x .social-name    { color:rgba(231,233,234,0.4); }
-    .sc-x::before         { background:#e7e9ea; }
-    .sc-x:hover .social-icon     { background:rgba(231,233,234,0.1); border-color:#e7e9ea; box-shadow:0 0 16px rgba(231,233,234,0.2); }
-    .sc-x:hover .social-icon svg { fill:#e7e9ea; }
-    .sc-x:hover .social-name     { color:#e7e9ea; }
-
-    /* ══ TIKTOK — #ff2d55 ══ */
-    .sc-tiktok .social-icon    { background:rgba(255,45,85,0.07); border-color:rgba(255,45,85,0.25); }
-    .sc-tiktok .social-icon svg{ fill:rgba(255,45,85,0.55); }
+    .sc-discord .social-name   { color:rgba(88,101,242,0.55); }
+    .sc-x .social-name         { color:rgba(231,233,234,0.4); }
     .sc-tiktok .social-name    { color:rgba(255,45,85,0.55); }
-    .sc-tiktok::before         { background:#ff2d55; }
-    .sc-tiktok:hover .social-icon     { background:rgba(255,45,85,0.15); border-color:#ff2d55; box-shadow:0 0 16px rgba(255,45,85,0.4); }
-    .sc-tiktok:hover .social-icon svg { fill:#ff2d55; }
-    .sc-tiktok:hover .social-name     { color:#ff2d55; }
+    .sc-instagram .social-name { color:rgba(225,48,108,0.55); }
+    .sc-youtube .social-name   { color:rgba(255,64,64,0.55); }
 
-    /* ══ INSTAGRAM — #e1306c ══ */
-    .sc-instagram .social-icon    { background:rgba(225,48,108,0.07); border-color:rgba(225,48,108,0.25); }
-    .sc-instagram .social-icon svg{ fill:rgba(225,48,108,0.55); }
-    .sc-instagram .social-name    { color:rgba(225,48,108,0.55); }
-    .sc-instagram::before         { background:#e1306c; }
-    .sc-instagram:hover .social-icon     { background:rgba(225,48,108,0.15); border-color:#e1306c; box-shadow:0 0 16px rgba(225,48,108,0.4); }
+    .sc-twitch::before    { background:#9146ff; }
+    .sc-discord::before   { background:#5865f2; }
+    .sc-x::before         { background:#e7e9ea; }
+    .sc-tiktok::before    { background:#ff2d55; }
+    .sc-instagram::before { background:#e1306c; }
+    .sc-youtube::before   { background:#ff4040; }
+
+    .sc-twitch:hover .social-icon    { background:rgba(145,70,255,0.18); border-color:#9146ff; box-shadow:0 0 16px rgba(145,70,255,0.45); }
+    .sc-discord:hover .social-icon   { background:rgba(88,101,242,0.18);  border-color:#5865f2; box-shadow:0 0 16px rgba(88,101,242,0.45); }
+    .sc-x:hover .social-icon         { background:rgba(231,233,234,0.1);  border-color:#e7e9ea; box-shadow:0 0 16px rgba(231,233,234,0.2); }
+    .sc-tiktok:hover .social-icon    { background:rgba(255,45,85,0.15);   border-color:#ff2d55; box-shadow:0 0 16px rgba(255,45,85,0.4); }
+    .sc-instagram:hover .social-icon { background:rgba(225,48,108,0.15);  border-color:#e1306c; box-shadow:0 0 16px rgba(225,48,108,0.4); }
+    .sc-youtube:hover .social-icon   { background:rgba(255,64,64,0.15);   border-color:#ff4040; box-shadow:0 0 16px rgba(255,64,64,0.4); }
+
+    .sc-twitch:hover .social-icon svg    { fill:#9146ff; }
+    .sc-discord:hover .social-icon svg   { fill:#5865f2; }
+    .sc-x:hover .social-icon svg         { fill:#e7e9ea; }
+    .sc-tiktok:hover .social-icon svg    { fill:#ff2d55; }
     .sc-instagram:hover .social-icon svg { fill:#e1306c; }
-    .sc-instagram:hover .social-name     { color:#e1306c; }
+    .sc-youtube:hover .social-icon svg   { fill:#ff4040; }
 
-    /* ══ YOUTUBE — #ff4040 ══ */
-    .sc-youtube .social-icon    { background:rgba(255,64,64,0.07); border-color:rgba(255,64,64,0.25); }
-    .sc-youtube .social-icon svg{ fill:rgba(255,64,64,0.55); }
-    .sc-youtube .social-name    { color:rgba(255,64,64,0.55); }
-    .sc-youtube::before         { background:#ff4040; }
-    .sc-youtube:hover .social-icon     { background:rgba(255,64,64,0.15); border-color:#ff4040; box-shadow:0 0 16px rgba(255,64,64,0.4); }
-    .sc-youtube:hover .social-icon svg { fill:#ff4040; }
-    .sc-youtube:hover .social-name     { color:#ff4040; }
+    .sc-twitch:hover .social-name    { color:#9146ff; }
+    .sc-discord:hover .social-name   { color:#5865f2; }
+    .sc-x:hover .social-name         { color:#e7e9ea; }
+    .sc-tiktok:hover .social-name    { color:#ff2d55; }
+    .sc-instagram:hover .social-name { color:#e1306c; }
+    .sc-youtube:hover .social-name   { color:#ff4040; }
 
     /* ════════════════════════════════ */
     /* FOOTER                          */
@@ -296,15 +263,19 @@
     /* ════════════════════════════════ */
     /* RESPONSIVE                      */
     /* ════════════════════════════════ */
+    @media (max-width:900px) {
+      .tz-row { grid-template-columns:repeat(2,1fr); }
+    }
     @media (max-width:768px) {
       nav { padding:1rem 1.5rem; }
       .nav-jp { display:none; }
       #hero { padding-top:7rem; }
       .sched-grid { grid-template-columns:repeat(4,1fr); }
-      .hero-jp-tr, .hero-jp-bl { display:none; }
+      .hero-jp-tr,.hero-jp-bl { display:none; }
     }
     @media (max-width:540px) {
       .sched-grid { grid-template-columns:repeat(2,1fr); }
+      .tz-row { grid-template-columns:repeat(2,1fr); }
       .socials-grid { grid-template-columns:repeat(3,1fr); }
       .hero-btns { flex-direction:column; align-items:center; }
     }
@@ -321,7 +292,7 @@
   <!-- ╚═══════╝ -->
   <nav>
     <div class="nav-left">
-      <a href="#" class="nav-logo">samu<span class="part2">sanc</span></a>
+      <a href="#" class="nav-logo">samu<span class="p2">sanc</span></a>
       <span class="nav-jp" aria-hidden="true">配信者</span>
     </div>
     <div class="live-pill" id="nav-live">
@@ -330,19 +301,48 @@
     </div>
   </nav>
 
-  <!-- ╔═════════════╗ -->
-  <!-- ║ LIVE BANNER ║ -->
-  <!-- ╚═════════════╝ -->
-  <div id="live-banner">
-    <div class="banner-dot"></div>
-    <span class="banner-jp" aria-hidden="true">ライブ</span>
-    <span class="banner-text">¡ Estamos en Directo !</span>
-    <span class="banner-jp" aria-hidden="true">配信中</span>
-    <div class="banner-dot"></div>
-    <a href="https://www.twitch.tv/menostrece" class="banner-link" target="_blank" rel="noopener">
-      twitch.tv/menostrece &rarr;
-    </a>
-  </div>
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║  LIVE CONTENT (banner + stream)       ║ -->
+  <!-- ║  hidden by default, shown when live   ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="live-content">
+
+    <!-- Banner -->
+    <div id="live-banner">
+      <div class="banner-dot"></div>
+      <span class="banner-jp" aria-hidden="true">ライブ</span>
+      <span class="banner-text">¡ Estamos en Directo !</span>
+      <span class="banner-jp" aria-hidden="true">配信中</span>
+      <div class="banner-dot"></div>
+      <a href="https://www.twitch.tv/menostrece" class="banner-link" target="_blank" rel="noopener">
+        twitch.tv/menostrece &rarr;
+      </a>
+    </div>
+
+    <!-- Stream embed -->
+    <section id="stream">
+      <div class="stream-header">
+        <div class="stream-label-wrap">
+          <p class="stream-label">En directo en <span>Twitch</span></p>
+          <span class="stream-jp" aria-hidden="true">配信</span>
+        </div>
+        <a href="https://www.twitch.tv/menostrece" class="stream-ch-link" target="_blank" rel="noopener">
+          twitch.tv/menostrece &uarr;
+        </a>
+      </div>
+      <div class="stream-wrap">
+        <span class="stream-badge">EN VIVO</span>
+        <div class="stream-aspect">
+          <div class="stream-loading" id="stream-loading">
+            <div class="stream-loading-icon">&#9654;</div>
+            <p class="stream-loading-text">Cargando stream&hellip;</p>
+          </div>
+          <div id="twitch-player"></div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /#live-content -->
 
   <!-- ╔════════╗ -->
   <!-- ║  HERO  ║ -->
@@ -351,18 +351,17 @@
     <canvas id="hero-canvas"></canvas>
     <div class="hero-grid"></div>
     <div class="hero-radial"></div>
-    <span class="hero-jp-tr" aria-hidden="true">配信中<br>ライブ<br>参加</span>
+    <span class="hero-jp-tr" aria-hidden="true">開発者<br>ライブ<br>日本語</span>
     <span class="hero-jp-bl" aria-hidden="true">ゲーム　深夜</span>
     <div class="hero-content">
-      <p class="hero-eyebrow">Creador de Contenido &middot; Gamer &middot; Streamer</p>
+      <p class="hero-eyebrow">Dev Indie &middot; IA &amp; Software &middot; 日本語勉強中</p>
       <h1 class="hero-name">
         <span class="hero-name-solid"><span class="glitch" data-text="samu">samu</span></span>
         <span class="hero-name-outline">sanc<span class="accent-dot">.</span></span>
       </h1>
-      <p class="hero-sub">
-        <span class="hl">Streams de juegos, caos y buenas vibras</span> — únete a la comunidad,
-        sígueme en Twitch y en todas las redes.
-      </p>
+      <div class="hero-bio">
+        <p>Aquí podemos observar al <em>desarrollador indie</em> en su hábitat natural. Esta curiosa criatura crea videojuegos, experimenta con <em>inteligencia artificial</em> y ocasionalmente habla de tecnología con una energía inquietante. Los científicos han confirmado que pronto iniciará su proceso de <em>migración hacia tierras orientales</em>, aunque el espécimen aún no ha dado más detalles...</p>
+      </div>
       <div class="hero-btns">
         <a href="https://www.twitch.tv/menostrece" class="btn-watch" target="_blank" rel="noopener">&#9654;&nbsp; Ver en Directo</a>
         <a href="https://discord.gg/" class="btn-disc" target="_blank" rel="noopener">Únete al Discord</a>
@@ -372,49 +371,88 @@
   </section>
 
   <!-- ╔══════════╗ -->
-  <!-- ║  STREAM  ║ -->
-  <!-- ╚══════════╝ -->
-  <section id="stream">
-    <div class="stream-header">
-      <div class="stream-label-wrap">
-        <p class="stream-label">En directo en <span>Twitch</span></p>
-        <span class="stream-jp" aria-hidden="true">配信</span>
-      </div>
-      <a href="https://www.twitch.tv/menostrece" class="stream-ch-link" target="_blank" rel="noopener">twitch.tv/menostrece &uarr;</a>
-    </div>
-    <div class="stream-wrap" id="stream-wrap">
-      <span class="stream-badge" id="stream-badge">EN VIVO</span>
-      <div class="stream-aspect">
-        <div class="stream-loading" id="stream-loading">
-          <div class="stream-loading-icon">&#9654;</div>
-          <p class="stream-loading-text">Cargando stream&hellip;</p>
-        </div>
-        <div id="twitch-player"></div>
-      </div>
-    </div>
-    <p class="stream-offline" id="stream-offline">
-      El stream está offline ahora mismo — consulta el horario abajo o sígueme en Twitch para recibir notificaciones cuando estemos en vivo.
-    </p>
-  </section>
-
-  <!-- ╔══════════╗ -->
   <!-- ║ SCHEDULE ║ -->
   <!-- ╚══════════╝ -->
   <section id="schedule">
     <p class="sec-label">Horario</p>
     <h2 class="sec-title">Cuándo <em>Streameo</em></h2>
     <span class="sec-jp" aria-hidden="true">配信スケジュール</span>
+
     <div class="sched-grid">
       <div class="sched-day"><p class="day-name">Lun</p><p class="day-off">Descanso</p></div>
-      <div class="sched-day active"><p class="day-name">Mar</p><p class="day-time">20:00</p><span class="day-tag">FPS</span></div>
-      <div class="sched-day active"><p class="day-name">Mié</p><p class="day-time">20:00</p><span class="day-tag">Just Chat</span></div>
-      <div class="sched-day"><p class="day-name">Jue</p><p class="day-off">Descanso</p></div>
-      <div class="sched-day active"><p class="day-name">Vie</p><p class="day-time">21:00</p><span class="day-tag">RPG</span></div>
-      <div class="sched-day active"><p class="day-name">Sáb</p><p class="day-time">17:00</p><span class="day-tag">Variado</span></div>
-      <div class="sched-day"><p class="day-name">Dom</p><p class="day-off">Descanso</p></div>
+
+      <div class="sched-day active">
+        <p class="day-name">Mar</p>
+        <p class="day-time">18:30</p>
+        <span class="day-tag">IA &amp; Dev</span>
+      </div>
+
+      <div class="sched-day"><p class="day-name">Mié</p><p class="day-off">Descanso</p></div>
+
+      <div class="sched-day active">
+        <p class="day-name">Jue</p>
+        <p class="day-time">18:30</p>
+        <span class="day-tag">Indie Dev</span>
+      </div>
+
+      <div class="sched-day"><p class="day-name">Vie</p><p class="day-off">Descanso</p></div>
+
+      <div class="sched-day active">
+        <p class="day-name">Sáb</p>
+        <p class="day-time">18:30</p>
+        <span class="day-tag">Gaming</span>
+      </div>
+
+      <div class="sched-day active">
+        <p class="day-name">Dom</p>
+        <p class="day-time">18:30</p>
+        <span class="day-tag">Experimental</span>
+      </div>
     </div>
+
+    <!-- Timezone conversions -->
+    <div class="tz-row">
+      <div class="tz-item">
+        <span class="tz-flag">🇪🇸</span>
+        <div class="tz-info">
+          <span class="tz-country">España</span>
+          <span class="tz-time">18:30</span>
+          <span class="tz-note">CET/CEST</span>
+        </div>
+      </div>
+      <div class="tz-item">
+        <span class="tz-flag">🇲🇽</span>
+        <div class="tz-info">
+          <span class="tz-country">México</span>
+          <span class="tz-time">10:30</span>
+          <span class="tz-note">CST (UTC-6)</span>
+        </div>
+      </div>
+      <div class="tz-item">
+        <span class="tz-flag">🇨🇴</span>
+        <div class="tz-info">
+          <span class="tz-country">Colombia</span>
+          <span class="tz-time">11:30</span>
+          <span class="tz-note">COT (UTC-5)</span>
+        </div>
+      </div>
+      <div class="tz-item">
+        <span class="tz-flag">🇦🇷</span>
+        <div class="tz-info">
+          <span class="tz-country">Argentina</span>
+          <span class="tz-time">13:30</span>
+          <span class="tz-note">ART (UTC-3)</span>
+        </div>
+      </div>
+    </div>
+
     <p class="sched-note">
-      Todos los horarios en <span>CET (Madrid)</span> &middot; El horario puede variar — únete al <span>Discord</span> o sígueme en Twitch para actualizaciones.
+      Martes — <span>IA &amp; Software</span> &nbsp;·&nbsp;
+      Jueves — <span>Indie Dev</span> &nbsp;·&nbsp;
+      Sábado — <span>Gaming</span> &nbsp;·&nbsp;
+      Domingo — <span>Experimental</span>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      El horario puede variar — sígueme en Twitch o únete al <span>Discord</span> para actualizaciones.
     </p>
   </section>
 
@@ -487,74 +525,71 @@
     <a href="#" class="footer-top">&uarr; Volver arriba</a>
   </footer>
 
+  <!-- Twitch Player SDK (official: https://player.twitch.tv/js/embed/v1.js) -->
   <script src="https://player.twitch.tv/js/embed/v1.js"></script>
   <script>
-    // ── Cursor ───────────────────────────────
-    const cursor = document.getElementById('cursor');
-    const ring   = document.getElementById('cursor-ring');
+    // ── Cursor ────────────────────────────────
+    const cursor=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
     let mx=0,my=0,rx=0,ry=0;
-    document.addEventListener('mousemove',e=>{ mx=e.clientX;my=e.clientY;cursor.style.left=(mx-4)+'px';cursor.style.top=(my-4)+'px'; });
-    (function animRing(){ rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing); })();
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=(mx-4)+'px';cursor.style.top=(my-4)+'px';});
+    (function A(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(A);})();
     document.querySelectorAll('a,button,.sched-day,.social-card').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{ cursor.style.transform='scale(2.5)';ring.style.width=ring.style.height='48px'; });
-      el.addEventListener('mouseleave',()=>{ cursor.style.transform='scale(1)';ring.style.width=ring.style.height='28px'; });
+      el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';ring.style.width=ring.style.height='48px';});
+      el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.width=ring.style.height='28px';});
     });
 
-    // ── Scroll Progress ──────────────────────
+    // ── Scroll Progress ───────────────────────
     window.addEventListener('scroll',()=>{
-      const s=document.documentElement.scrollTop;
-      const h=document.documentElement.scrollHeight-window.innerHeight;
+      const s=document.documentElement.scrollTop,h=document.documentElement.scrollHeight-window.innerHeight;
       document.getElementById('prog').style.width=(s/h*100)+'%';
     });
 
-    // ── Particle Canvas ──────────────────────
-    const canvas=document.getElementById('hero-canvas');
-    const ctx=canvas.getContext('2d');
+    // ── Particle Canvas ───────────────────────
+    const canvas=document.getElementById('hero-canvas'),ctx=canvas.getContext('2d');
     let W,H;
-    function resize(){ W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight; }
-    resize(); window.addEventListener('resize',resize);
-    class P {
-      constructor(){ this.reset(true); }
-      reset(init){ this.x=Math.random()*W;this.y=init?Math.random()*H:(Math.random()>.5?-5:H+5);this.vx=(Math.random()-.5)*0.3;this.vy=(Math.random()-.5)*0.3;this.r=Math.random()*1.2+0.4;this.a=Math.random()*0.28+0.07; }
-      tick(){ this.x+=this.vx;this.y+=this.vy;if(this.x<-10||this.x>W+10||this.y<-10||this.y>H+10)this.reset(false); }
-      draw(){ ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(54,57,255,${this.a})`;ctx.fill(); }
+    function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+    resize();window.addEventListener('resize',resize);
+    class P{
+      constructor(){this.reset(true);}
+      reset(i){this.x=Math.random()*W;this.y=i?Math.random()*H:(Math.random()>.5?-5:H+5);this.vx=(Math.random()-.5)*0.3;this.vy=(Math.random()-.5)*0.3;this.r=Math.random()*1.2+0.4;this.a=Math.random()*0.28+0.07;}
+      tick(){this.x+=this.vx;this.y+=this.vy;if(this.x<-10||this.x>W+10||this.y<-10||this.y>H+10)this.reset(false);}
+      draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(54,57,255,${this.a})`;ctx.fill();}
     }
     const pts=Array.from({length:85},()=>new P());
-    function drawLines(){ for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){ const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);if(d<110){ctx.beginPath();ctx.strokeStyle=`rgba(54,57,255,${0.07*(1-d/110)})`;ctx.lineWidth=0.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}}}
-    (function loop(){ ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.tick();p.draw();});drawLines();requestAnimationFrame(loop); })();
+    function lines(){for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);if(d<110){ctx.beginPath();ctx.strokeStyle=`rgba(54,57,255,${0.07*(1-d/110)})`;ctx.lineWidth=0.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}}}
+    (function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.tick();p.draw();});lines();requestAnimationFrame(loop);})();
 
-    // ── Live state ───────────────────────────
+    // ── Live state ────────────────────────────
     function setLive(live){
-      const pill=document.getElementById('nav-live');
+      // Nav pill
       document.getElementById('nav-txt').textContent=live?'EN VIVO':'OFFLINE';
-      pill.classList.toggle('is-live',live);
-      const banner=document.getElementById('live-banner');
-      live?banner.classList.add('visible'):banner.classList.remove('visible');
-      document.getElementById('stream-wrap').classList.toggle('is-live',live);
-      document.getElementById('stream-offline').classList.toggle('hidden',live);
+      document.getElementById('nav-live').classList.toggle('is-live',live);
+      // Show/hide the entire live block (banner + stream)
+      document.getElementById('live-content').classList.toggle('visible',live);
     }
 
-    // ── Twitch Player ────────────────────────
+    // ── Twitch Player ─────────────────────────
     // SDK: https://player.twitch.tv/js/embed/v1.js
-    const pageLoadTime=Date.now();
+    const t0=Date.now();
     function initTwitch(){
-      if(typeof Twitch==='undefined'||typeof Twitch.Player==='undefined'){
+      if(typeof Twitch==='undefined'||!Twitch.Player){
         document.getElementById('stream-loading').innerHTML='<p style="font-size:.78rem;color:#485098;letter-spacing:.1em">No se pudo cargar el SDK de Twitch</p>';
         return;
       }
       const player=new Twitch.Player("twitch-player",{
-        channel:"menostrece", width:"100%", height:"100%",
-        autoplay:true, muted:true,
+        channel:"menostrece",width:"100%",height:"100%",
+        autoplay:true,muted:true,
         parent:[window.location.hostname||'localhost']
       });
-      player.addEventListener(Twitch.Player.READY,   ()=>{ document.getElementById('stream-loading').classList.add('hidden'); });
-      player.addEventListener(Twitch.Player.ONLINE,  ()=>{ setLive(true); });
-      player.addEventListener(Twitch.Player.OFFLINE, ()=>{ setLive(false); });
+      player.addEventListener(Twitch.Player.READY,   ()=>document.getElementById('stream-loading').classList.add('hidden'));
+      player.addEventListener(Twitch.Player.ONLINE,  ()=>setLive(true));
+      player.addEventListener(Twitch.Player.OFFLINE, ()=>setLive(false));
       player.addEventListener(Twitch.Player.PLAYING, ()=>{
         setLive(true);
-        if(Date.now()-pageLoadTime<10000){ setTimeout(()=>{ document.getElementById('stream').scrollIntoView({behavior:'smooth'}); },600); }
+        // Auto-scroll to stream on initial load if it starts playing
+        if(Date.now()-t0<10000) setTimeout(()=>document.getElementById('live-content').scrollIntoView({behavior:'smooth'}),400);
       });
-      player.addEventListener(Twitch.Player.ENDED,   ()=>{ setLive(false); });
+      player.addEventListener(Twitch.Player.ENDED,()=>setLive(false));
     }
     document.readyState==='complete'?initTwitch():window.addEventListener('load',initTwitch);
   </script>
